@@ -69,6 +69,7 @@ public class TKTextField: UITextField {
 	@objc func pressedReturn() {
 		guard sender != nil && receiver != nil else { return }
 		sender?.addNewTag(named: text)
+        sender?.delegate?.tagIsBeingAdded(viewController: sender!, name: text)
 	}
 	
 	
