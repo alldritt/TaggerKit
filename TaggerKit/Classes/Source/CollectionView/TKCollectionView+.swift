@@ -133,10 +133,10 @@ extension TKCollectionView: TagCellDelegate {
 		switch action {
 		case .addTag:
 			addNewTag(named: name)
-			delegate?.tagIsBeingAdded(name: name)
+            delegate?.tagIsBeingAdded(viewController: self, name: name)
 		case .removeTag:
 			removeOldTag(named: name)
-			delegate?.tagIsBeingRemoved(name: name)
+			delegate?.tagIsBeingRemoved(viewController: self, name: name)
 		case .noAction:
 			break
 		}

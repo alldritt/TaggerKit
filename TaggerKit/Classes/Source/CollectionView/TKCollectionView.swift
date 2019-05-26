@@ -11,8 +11,8 @@ import UIKit
 
 
 protocol TKCollectionViewDelegate {
-	func tagIsBeingAdded(name: String?)
-	func tagIsBeingRemoved(name: String?)
+	func tagIsBeingAdded(viewController: TKCollectionView, name: String?)
+	func tagIsBeingRemoved(viewController: TKCollectionView, name: String?)
     func tagsDidChange(viewController: TKCollectionView)
 }
 
