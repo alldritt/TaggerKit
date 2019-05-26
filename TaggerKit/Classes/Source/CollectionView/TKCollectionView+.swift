@@ -49,6 +49,7 @@ extension TKCollectionView: UICollectionViewDataSource {
 				receiver!.tagsCollectionView.performBatchUpdates({
 					receiver!.tagsCollectionView.insertItems(at: [indexPath])
 				}, completion: nil)
+                receiver!.delegate?.tagsDidChange(viewController: receiver!)
 			}
 		}
 	}
@@ -63,6 +64,7 @@ extension TKCollectionView: UICollectionViewDataSource {
 				tagsCollectionView.performBatchUpdates({
 					self.tagsCollectionView?.deleteItems(at: [indexPath])
 				}, completion: nil)
+                delegate?.tagsDidChange(viewController: self)
 			}
 		}
 	}

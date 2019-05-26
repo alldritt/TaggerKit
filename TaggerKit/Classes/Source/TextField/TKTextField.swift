@@ -54,17 +54,15 @@ public class TKTextField: UITextField {
 		if filteredStrings.isEmpty {
 			if text! == "" {
 				sender!.tags = allTags
-				sender!.tagsCollectionView.reloadData()
 			} else {
 				sender!.tags = ["\(text!)"]
-				sender!.tagsCollectionView.reloadData()
 			}
 			
 		} else {
 			sender!.tags = filteredStrings
-			sender!.tagsCollectionView.reloadData()
 		}
-		
+        sender!.tagsCollectionView.reloadData()
+        sender!.delegate?.tagsDidChange(viewController: sender!)
 	}
 	
 	
