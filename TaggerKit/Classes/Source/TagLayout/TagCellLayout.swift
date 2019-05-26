@@ -59,7 +59,9 @@ public class TagCellLayout: UICollectionViewLayout {
 		let width = collectionViewWidth
 		let height = layoutInfoList
 			.filter { $0.isFirstElementInARow }
-			.reduce(0, { $0 + $1.layoutAttribute.frame.height })
+            .reduce(CGFloat(0), {
+                return $0 + $1.layoutAttribute.frame.height + ($0 == 0 ? CGFloat(0) : (delegate?.tagCellLayoutInteritemVerticalSpacing(layout: self) ?? CGFloat(0)))
+            })
 		return CGSize(width: width, height: height)
 	}
 }
