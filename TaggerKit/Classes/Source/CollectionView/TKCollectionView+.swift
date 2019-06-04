@@ -30,7 +30,15 @@ extension TKCollectionView: UICollectionViewDataSource {
 		cell.tagAction		= action ?? defaultAction
 		cell.cornerRadius 	= customCornerRadius ?? defaultCornerRadius
 		cell.font			= customFont ?? defaultFont
-		cell.color			= customBackgroundColor ?? defaultBackgroundColor
+        if receiver == nil {
+            cell.color          = customBackgroundColor ?? defaultBackgroundColor
+            cell.borderWidth    = 0
+        }
+        else {
+            cell.borderWidth    = 2
+            cell.borderColor    = customBackgroundColor ?? defaultBackgroundColor
+            cell.color          = (customBackgroundColor ?? defaultBackgroundColor).withAlphaComponent(0.2)
+        }
 		cell.delegate		= self
 		
 		return cell

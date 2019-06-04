@@ -22,7 +22,9 @@ class TKTagCell: UICollectionViewCell {
 	var tagName			: String? { didSet { nameLabel.text = tagName } }
 	var font			: UIFont? { didSet { nameLabel.font = font } }
 	var color 			: UIColor? { didSet { backgroundColor = color } }
-	var cornerRadius	: CGFloat? { didSet { layer.cornerRadius = cornerRadius! } }
+    var cornerRadius    : CGFloat? { didSet { layer.cornerRadius = cornerRadius ?? 0 } }
+    var borderWidth     : CGFloat? { didSet { layer.borderWidth = borderWidth ?? 0 } }
+    var borderColor     : UIColor? { didSet { layer.borderColor = borderColor?.cgColor } }
 	var tagAction 		: actionType! { didSet { setupButton(action: tagAction) } }
 	
 	lazy var nameLabel: UILabel = {
