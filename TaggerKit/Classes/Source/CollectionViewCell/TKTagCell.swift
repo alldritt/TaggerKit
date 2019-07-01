@@ -31,6 +31,11 @@ class TKTagCell: UICollectionViewCell {
 		let label 										= UILabel()
 		label.textColor 								= UIColor.darkGray
 		label.textAlignment 							= .center
+        
+        label.isUserInteractionEnabled = true
+        let gestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(labelPressed(sender:)))
+        label.addGestureRecognizer(gestureRecognizer)
+
 		return label
 	}()
 	
@@ -105,13 +110,18 @@ class TKTagCell: UICollectionViewCell {
 		button.addTarget(self, action: #selector(buttonTapped), for: .touchUpInside)
 	}
 	
-	
 	// MARK: - Buttons action methods
 	@objc private func buttonTapped() {
 		if let cellDelegate = delegate {
 			cellDelegate.didTapButton(name: tagName, action: tagAction)
 		}
 	}
+
+    @objc private func labelPressed(sender: UIGestureRecognizer) {
+        if sender.state == .ended && delegate?.receiver != nil {
+            buttonTapped()
+        }
+    }
 
 	
 	func loadImage(name: String) -> UIImage? {
