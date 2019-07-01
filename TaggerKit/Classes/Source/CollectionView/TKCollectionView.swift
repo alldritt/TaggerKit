@@ -31,7 +31,16 @@ public class TKCollectionView: UIViewController {
 	// MARK: - Class properties
 	public var tagsCollectionView	: UICollectionView!
 	public var tagCellLayout		: TagCellLayout!
-	public var receiver 			: TKCollectionView?
+    public var receiver 			: TKCollectionView? {
+        didSet {
+            updateVisibleTags()
+        }
+    }
+    public var source               : TKCollectionView? {
+        didSet {
+            updateVisibleTags()
+        }
+    }
 	public var delegate 			: UIViewController?
 	
 	let defaultFont				= UIFont.boldSystemFont(ofSize: 14)
@@ -46,7 +55,12 @@ public class TKCollectionView: UIViewController {
 	}
 	
 	var longTagIndex	: Int { return 1 }
-	public var tags 	= [String]()
+    public var tags 	= [String]() {
+        didSet {
+            updateVisibleTags()
+        }
+    }
+    public var visibleTags = [String]()
 	
 	// MARK: - Lifecycle methods
     public override func viewDidLoad() {

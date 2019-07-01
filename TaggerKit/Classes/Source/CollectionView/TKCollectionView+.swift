@@ -19,14 +19,14 @@ extension TKCollectionView: UICollectionViewDataSource {
 	
 	
 	public func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-		return tags.count
+		return visibleTags.count
 	}
 	
 	
 	public func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
 		let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "TKCell", for: indexPath) as! TKTagCell
 		
-		cell.tagName 		= tags[indexPath.item]
+		cell.tagName 		= visibleTags[indexPath.item]
 		cell.tagAction		= action ?? defaultAction
 		cell.cornerRadius 	= customCornerRadius ?? defaultCornerRadius
 		cell.font			= customFont ?? defaultFont
@@ -46,18 +46,28 @@ extension TKCollectionView: UICollectionViewDataSource {
 	
 	
 	public func addNewTag(named: String?) {
-		guard receiver != nil else { return }
+		guard let receiver = receiver else { return }
 		if let tagToAdd = named {
 			guard tagToAdd.count > 0 else { return }
-			if receiver!.tags.contains(tagToAdd) {
+			if receiver.tags.contains(tagToAdd) {
 				return
 			} else {
-				receiver!.tags.insert(tagToAdd, at: 0)
+				receiver.tags.insert(tagToAdd, at: 0)
 				let indexPath = IndexPath(item: 0, section: 0)
-				receiver!.tagsCollectionView.performBatchUpdates({
-					receiver!.tagsCollectionView.insertItems(at: [indexPath])
-				}, completion: nil)
-                receiver!.delegate?.tagsDidChange(viewController: receiver!)
+				receiver.tagsCollectionView.performBatchUpdates({
+					receiver.tagsCollectionView.insertItems(at: [indexPath])
+				}, completion: { _ in
+                    receiver.delegate?.tagsDidChange(viewController: receiver)
+                })
+                
+                if let deleteIndex = visibleTags.firstIndex(of: tagToAdd) {
+                    visibleTags.remove(at: deleteIndex)
+                    tagsCollectionView.performBatchUpdates({
+                        self.tagsCollectionView.deleteItems(at: [IndexPath(row: deleteIndex, section: 0)])
+                    }, completion: { _ in
+                        self.delegate?.tagsDidChange(viewController: self)
+                    })
+                }
 			}
 		}
 	}
@@ -71,12 +81,36 @@ extension TKCollectionView: UICollectionViewDataSource {
 				let indexPath = IndexPath(item: index!, section: 0)
 				tagsCollectionView.performBatchUpdates({
 					self.tagsCollectionView?.deleteItems(at: [indexPath])
-				}, completion: nil)
-                delegate?.tagsDidChange(viewController: self)
+				}, completion: { _ in
+                    self.delegate?.tagsDidChange(viewController: self)
+                })
+                
+                if let source = source {
+                    let insertIndex = source.visibleTags.insertionIndexOf(elem: tagToRemove, isOrderedBefore: { s1, s2 in
+                        return s1.caseInsensitiveCompare(s2) == .orderedAscending
+                    })
+                    source.visibleTags.insert(tagToRemove, at: insertIndex)
+                    source.tagsCollectionView.performBatchUpdates({
+                        source.tagsCollectionView.insertItems(at: [IndexPath(row: insertIndex, section: 0)])
+                    }, completion: { _ in
+                        source.delegate?.tagsDidChange(viewController: source)
+                    })
+                }
 			}
 		}
 	}
 	
+    public func updateVisibleTags() {
+        if let receiver = receiver {
+            visibleTags = Array<String>(Set<String>(tags).subtracting(receiver.tags)).sorted(by: { s1, s2 in
+                return s1.caseInsensitiveCompare(s2) == .orderedAscending
+            })
+        }
+        else {
+            visibleTags = tags
+        }
+    }
+
 }
 
 
@@ -104,7 +138,7 @@ extension TKCollectionView: TagCellLayoutDelegate {
 	
 	
 	public func tagCellLayoutTagSize(layout: TagCellLayout, atIndex index: Int) -> CGSize {
-		let tagName 	= tags[index]
+		let tagName 	= visibleTags[index]
 		let font 		= customFont ?? defaultFont
 		let cellSize 	= textSize(text: tagName, font: font, collectionView: tagsCollectionView)
 		
@@ -136,6 +170,7 @@ extension TKCollectionView: TagCellLayoutDelegate {
 // MARK: - TagCellDelegate (action delegate)
 extension TKCollectionView: TagCellDelegate {
 	
+    
 	public func didTapButton(name: String?, action: actionType) {
 		
 		switch action {
@@ -153,3 +188,21 @@ extension TKCollectionView: TagCellDelegate {
 	
 }
 
+
+extension Array {
+    func insertionIndexOf(elem: Element, isOrderedBefore: (Element, Element) -> Bool) -> Int {
+        var lo = 0
+        var hi = self.count - 1
+        while lo <= hi {
+            let mid = (lo + hi)/2
+            if isOrderedBefore(self[mid], elem) {
+                lo = mid + 1
+            } else if isOrderedBefore(elem, self[mid]) {
+                hi = mid - 1
+            } else {
+                return mid // found at position mid
+            }
+        }
+        return lo // not found, would be inserted at position lo
+    }
+}
