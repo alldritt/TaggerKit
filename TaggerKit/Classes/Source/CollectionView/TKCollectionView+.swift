@@ -52,10 +52,11 @@ extension TKCollectionView: UICollectionViewDataSource {
 			if receiver.tags.contains(tagToAdd) {
 				return
 			} else {
-				receiver.tags.insert(tagToAdd, at: 0)
-				let indexPath = IndexPath(item: 0, section: 0)
-				receiver.tagsCollectionView.performBatchUpdates({
-					receiver.tagsCollectionView.insertItems(at: [indexPath])
+                let insertIndex = receiver.tags.count
+				receiver.tags.insert(tagToAdd, at: insertIndex)
+
+                receiver.tagsCollectionView.performBatchUpdates({
+					receiver.tagsCollectionView.insertItems(at: [IndexPath(item: insertIndex, section: 0)])
 				}, completion: { _ in
                     receiver.delegate?.tagsDidChange(viewController: receiver)
                 })
