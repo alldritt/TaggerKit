@@ -29,7 +29,11 @@ class TKTagCell: UICollectionViewCell {
 	
 	lazy var nameLabel: UILabel = {
 		let label 										= UILabel()
-		label.textColor 								= UIColor.darkGray
+        if #available(iOS 13.0, *) {
+            label.textColor                                 = UIColor.secondaryLabel
+        } else {
+            label.textColor                                 = UIColor.darkGray
+        }
 		label.textAlignment 							= .center
         
         label.isUserInteractionEnabled = true

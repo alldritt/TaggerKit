@@ -25,6 +25,7 @@ public class TKCollectionView: UIViewController {
 	public var customSpacing 			: CGFloat?
 	public var customCornerRadius 	  	: CGFloat?
 	public var customBackgroundColor 	: UIColor?
+    public var customTextColor          : UIColor?
 	public var action 					: actionType?
 	
 	

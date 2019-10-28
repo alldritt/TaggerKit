@@ -33,6 +33,12 @@ extension TKCollectionView: UICollectionViewDataSource {
         if receiver == nil {
             cell.color          = customBackgroundColor ?? defaultBackgroundColor
             cell.borderWidth    = 0
+            if #available(iOS 13.0, *) {
+                cell.nameLabel.textColor                                 = customTextColor ?? UIColor.label
+            }
+            else {
+                cell.nameLabel.textColor                                 = customTextColor ?? UIColor.white
+            }
         }
         else {
             cell.borderWidth    = 2
