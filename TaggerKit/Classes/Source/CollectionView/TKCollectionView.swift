@@ -10,7 +10,7 @@
 import UIKit
 
 
-protocol TKCollectionViewDelegate {
+public protocol TKCollectionViewDelegate {
 	func tagIsBeingAdded(viewController: TKCollectionView, name: String?)
 	func tagIsBeingRemoved(viewController: TKCollectionView, name: String?)
     func tagsDidChange(viewController: TKCollectionView)

@@ -129,13 +129,7 @@ class TKTagCell: UICollectionViewCell {
 
 	
 	func loadImage(name: String) -> UIImage? {
-		let podBundle = Bundle(identifier: "org.cocoapods.TaggerKit")!
-		if let url = podBundle.url(forResource: "TaggerKit", withExtension: "bundle") {
-			let bundle = Bundle(url: url)
-			return UIImage(named: name, in: bundle, compatibleWith: nil)
-		}
-		return nil
+        return UIImage(named: name, in: Bundle.module, compatibleWith: nil)
 	}
-	
-	
+		
 }
